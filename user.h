@@ -37,8 +37,8 @@ class User
              unsigned int distancePref = 0,
              std::string genderPref = "",
              std::string likedUsers = "",
-             User *next = nullptr,
-             User *prev = nullptr);
+             User* next = nullptr,
+             User* prev = nullptr);
 
         std::string getName()          const{return name;}
         unsigned int getAge()          const{return age;}
@@ -54,14 +54,15 @@ class User
         unsigned int getDistancePref() const{return distancePref;}
         std::string getGenderPref()    const{return genderPref;}
         std::string getLikedUsers()    const{return likedUsers;}
-        User *getNext()                const{return next;}
-        User *getPrev()                const{return prev;}
+        User* getNext()                const{return next;}
+        User* getPrev()                const{return prev;}
 
         void setNext(User* ptr)             {next = ptr;}
         void setPrev(User* ptr)             {prev = ptr;}
-        void pushBack(User* &head, User* &tail, User* &User);
-        void popBack(User* &head, User* &tail);
         
 };
 
+// void pushBack(User* user);
+void pushBack(User* &head, User* &tail, User* &User);
+void popBack(User* &head, User* &tail);
 #endif

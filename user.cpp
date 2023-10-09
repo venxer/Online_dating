@@ -1,5 +1,6 @@
 #include "user.h"
 #include <string>
+#include <iostream>
 
 User::User(std::string name,
            unsigned int age,
@@ -34,23 +35,23 @@ User::User(std::string name,
     this->likedUsers = likedUsers;
 }
 
-    void User::pushBack(User* &head, User* &tail, User* &User)
+void pushBack(User* &prev, User* &next, User* &user)
+{
+    if(next == nullptr)
     {
-        if(tail == nullptr)
-        {
-            head = User;
-            tail = User;
-            return;
-        }
-        tail->setNext(User);
-        User->setPrev(tail);
-        tail = User;
+        prev = user;
+        next = user;
+        return;
     }
-    void User::popBack(User* &head, User* &tail)
-    {
-        User* temp = tail;
-        tail = tail->getPrev();
-        tail->setNext(nullptr);
-        // delete the original tail
-        delete temp;
-    }
+    next->setNext(user);
+    user->setPrev(next);
+    next = user;
+}
+void popBack(User* &prev, User* &next)
+{
+    User* temp = next;
+    next = next->getPrev();
+    next->setNext(nullptr);
+    // delete the original tail
+    delete temp;
+}
