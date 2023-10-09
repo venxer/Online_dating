@@ -1,0 +1,87 @@
+filter by:
+age
+gender
+distance
+
+When viewing, can swipe left or right
+left is NO
+right is like
+
+if both user swipe right, match established
+user has the option to unmatch after match established
+
+Input File Format:
+name
+age
+gender
+phoneNumber
+profession   <- user can choose not to disclose. ("Undisclosed")
+school       <- user can choose not to disclose. ("Undisclosed")
+latitude
+longitude
+isPremium
+agePrefMin
+agePrefMax
+distancePref <- int
+genderPref   <- male, female, both
+likedUsers   <- represented by user phone numbers, seperated by "_"
+				"null" if liked no one
+
+SUPPORTED COMMANDS
+1. show prof match with user's preference
+2. show all matches to user
+3. show all users who swiped right on current user (only if user is premium)
+4. unmatch someone
+
+nydate.exe users.txt output.txt phoneNumber profile
+exeFile    input     output     userNum     mode
+
+
+1. Mode Name: "profile"
+   Shows all profiles that matches with user's 
+   age pref, gender pref, distance pref
+
+   if no matches for pref:
+   outputFile:
+   "There are no users matching with your preference at this moment."
+   
+   outputFile Format: (skip to next if field is blank, do not print "Undisclosed")
+   '{name} {age}'
+   '{profession}'
+   '{education}'
+
+2. Mode Name: "match"
+   Shows profiles that match with current user (both user swiped right)
+
+   if no mutual matches:
+   outputFile:
+   "You do not have any matches at this moment."
+
+3. Mode Name: "like"
+   Shows all users who swiped right on current user
+   
+   if user not premium:
+   outputFile:
+   "Only premium users can view who liked you."
+
+   if user received no likes:
+   outputFile:
+   "You have not received any likes so far."
+
+   outputFile: (skip to next if field is blank, do not   print "Undisclosed")
+   '{name} {age}'
+   '{profession}'
+   '{education}'
+
+4. Mode Name: "unmatch" | mandatory arg with phone number of user to unmatch
+   (nydate.exe users.txt output.txt phoneNumber unmatch phoneNumberOther)
+
+   Shows profile of current user and other user
+   current user and other user should be unmatched
+ 
+   outputFile:
+   Check github
+
+When printing profiles and likes, the users should stay in the original order as they are in the input files.
+
+When printing matches, the users should be sorted in an increasing order based on their phone numbers, which should be a std::string type. For example, the user whose number is "765-651-1171" comes after the user whose number is "569-933-6508".
