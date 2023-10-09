@@ -20,31 +20,24 @@ int main(int argc, char const *argv[])
     std::string phoneNum = argv[3]; 
     std::string mode = argv[4];
     std::string otherNum;
-    
+
     User* head = nullptr;
     User* tail = nullptr;
     parseFile(input, head, tail);
 
-    printNode(head);
+    // printNode(head);
+    User* user;
+    bool userFound = fetchUser(head, phoneNum, user);
 
-
-    //check for otherNum if mode is "unmatch"
-    if(mode == "unmatch")
+    if(!userFound)
     {
-        if(argv[5] == NULL)
-        {
-            std::cerr << "Missing Inputs" << std::endl;
-            exit(1);   
-        }
-        else
-        {
-            otherNum = argv[5];
-        }
+        std::cerr << "Invalid Account Number" << std::endl;
+        exit(1);   
     }
 
     if(mode == "profile")
     {
-
+        findProfile(head, user, output);
     }
     else if(mode == "match")
     {
@@ -56,7 +49,16 @@ int main(int argc, char const *argv[])
     }
     else if(mode =="unmatch")
     {
-
+        // Check for otherNum if mode is "unmatch"
+        if(argv[5] == NULL)
+        {
+            std::cerr << "Missing Inputs" << std::endl;
+            exit(1);   
+        }
+        else
+        {
+            otherNum = argv[5];
+        }
     }
     else
     {
@@ -106,7 +108,7 @@ void printNode(User* head)
     // Loops till node is null
     while (head != nullptr)
     {
-        std::cout << head << std::endl;
+        std::cout << *head << std::endl;
 
         // Move to the next node
         head = head->getNext();

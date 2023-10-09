@@ -2,6 +2,7 @@
 #define USER_H
 
 #include <string>
+#include <algorithm>
 
 class User
 {
@@ -62,7 +63,12 @@ class User
         
 };
 
-// void pushBack(User* user);
 void pushBack(User* &head, User* &tail, User* &User);
 void popBack(User* &head, User* &tail);
+bool fetchUser(User* head, const std::string phoneNum, User* &user);
+std::string removeUnderscore(std::string input);
+double calculateDistance(double lat1, double lon1, double lat2, double lon2);
+std::ostream &operator<<(std::ostream &out_str, const User &user);
+void findProfile(User* head, User* user, std::string outputFile);
+void findMatch(User* head, User* user, std::string outputFile);
 #endif
