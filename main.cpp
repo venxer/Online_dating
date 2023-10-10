@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
     }
     else if(mode == "match")
     {
-
+        findMatch(head, user, output);
     }
     else if(mode == "like")
     {

@@ -109,7 +109,7 @@ void findProfile(User* head, User* user, std::string outputFile)
         exit(1);
     }
 
-    int matchCount = 0;
+    int count = 0;
     // Loop through nodes
     while(head != nullptr)
     {
@@ -123,23 +123,23 @@ void findProfile(User* head, User* user, std::string outputFile)
             distance <= user->getDistancePref() &&
             head->getPhoneNumber() != user->getPhoneNumber())
         {
-            // Increase match count + Output info
-            matchCount++;
+            // Increase count + Output info
+            count++;
             out_str << *head << std::endl;
-
         }
         head = head->getNext();
     }
-    // If no profiles mathces preferences
-    if(matchCount == 0)
+    // If no profiles matches preferences
+    if(count == 0)
     {
         out_str << "There are no users matching with your preference at this moment." << std::endl;
     }
     out_str.close();
 }
+//NEED TO SORT
 void findMatch(User* head, User* user, std::string outputFile)
 {
-        // Opens and check if outputFile is valid
+    // Opens and check if outputFile is valid
     std::ofstream out_str(outputFile);
     if(!out_str.good())
     {
@@ -147,7 +147,33 @@ void findMatch(User* head, User* user, std::string outputFile)
         exit(1);
     }
 
+    int count = 0;
+    std::string userLikedUser;
+    std::string userNum; 
+    if(head != nullptr)
+    {
+        userLikedUser = user->getLikedUsers();
+        userNum = user->getPhoneNumber();
+    }
 
+    // Loop through nodes
+    while(head != nullptr)
+    {
+        // Check if each other's phone numbers are in each other's likedUsers
+        if(userLikedUser.find(head->getPhoneNumber()) != std::string::npos &&
+           head->getLikedUsers().find(userNum) != std::string::npos)
+        {
+            // Increase count + Output info
+            count++;
+            out_str << *head << std::endl;
+        }
+        head = head->getNext();
+    }
+    // If no matches
+    if(count == 0)
+    {
+        out_str << "You do not have any matches at this moment." << std::endl;
+    }
     out_str.close();
 }
 std::ostream &operator<<(std::ostream &out_str, const User &user)
