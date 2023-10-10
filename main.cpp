@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-void parseFile(std::string &inputFile, User* &head, User* &tail);
+void parseFile(std::ifstream &in_str, User* &head, User* &tail);
 bool stringToBool(std::string input);
 void printNode(User* head);
 
