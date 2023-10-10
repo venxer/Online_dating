@@ -69,6 +69,8 @@ bool fetchUser(User* head, const std::string phoneNum, User* &user);
 std::string removeUnderscore(std::string input);
 double calculateDistance(double lat1, double lon1, double lat2, double lon2);
 std::ostream &operator<<(std::ostream &out_str, const User &user);
-void findProfile(User* head, User* user, std::string outputFile);
-void findMatch(User* head, User* user, std::string outputFile);
+void findProfile(User* head, const User* user, std::ofstream &out_str);
+void findMatch(User* head, const User* user, std::ofstream &out_str);
+void findLike(User* head, const User* user, std::ofstream &out_str);
+
 #endif

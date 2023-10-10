@@ -57,6 +57,7 @@ void popBack(User* &prev, User* &next)
     // delete the original tail
     delete temp;
 }
+
 std::string removeUnderscore(std::string input)
 {
     std::replace(input.begin(), input.end(), '_', ' ');
@@ -99,16 +100,9 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2)
 
     return distanceMiles;
 }
-void findProfile(User* head, User* user, std::string outputFile)
-{
-    // Opens and check if outputFile is valid
-    std::ofstream out_str(outputFile);
-    if(!out_str.good())
-    {
-        std::cerr << "Invalid Output File" << std::endl; 
-        exit(1);
-    }
 
+void findProfile(User* head, const User* user, std::ofstream &out_str)
+{
     int count = 0;
     // Loop through nodes
     while(head != nullptr)
@@ -134,19 +128,10 @@ void findProfile(User* head, User* user, std::string outputFile)
     {
         out_str << "There are no users matching with your preference at this moment." << std::endl;
     }
-    out_str.close();
 }
 //NEED TO SORT
-void findMatch(User* head, User* user, std::string outputFile)
+void findMatch(User* head, const User* user, std::ofstream &out_str)
 {
-    // Opens and check if outputFile is valid
-    std::ofstream out_str(outputFile);
-    if(!out_str.good())
-    {
-        std::cerr << "Invalid Output File" << std::endl; 
-        exit(1);
-    }
-
     int count = 0;
     std::string userLikedUser;
     std::string userNum; 
@@ -174,8 +159,12 @@ void findMatch(User* head, User* user, std::string outputFile)
     {
         out_str << "You do not have any matches at this moment." << std::endl;
     }
-    out_str.close();
 }
+void findLike(User* head, const User* user, std::ofstream &out_str)
+{
+
+}
+
 std::ostream &operator<<(std::ostream &out_str, const User &user)
 {
     out_str << user.getName() << " " << user.getAge() << std::endl;

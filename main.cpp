@@ -21,9 +21,22 @@ int main(int argc, char const *argv[])
     std::string mode = argv[4];
     std::string otherNum;
 
+    std::ifstream in_str(input);
+    if(!in_str.good())
+    {
+        std::cerr << "Invalid Input File" << std::endl; 
+        exit(1);
+    }
+    std::ofstream out_str(output);
+    if(!out_str.good())
+    {
+        std::cerr << "Invalid Output File" << std::endl; 
+        exit(1);
+    }
+
     User* head = nullptr;
     User* tail = nullptr;
-    parseFile(input, head, tail);
+    parseFile(in_str, head, tail);
 
     // printNode(head);
     User* user;
@@ -37,15 +50,15 @@ int main(int argc, char const *argv[])
 
     if(mode == "profile")
     {
-        findProfile(head, user, output);
+        findProfile(head, user, out_str);
     }
     else if(mode == "match")
     {
-        findMatch(head, user, output);
+        findMatch(head, user, out_str);
     }
     else if(mode == "like")
     {
-
+        findLike(head, user, out_str);
     }
     else if(mode =="unmatch")
     {
@@ -69,15 +82,8 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-void parseFile(std::string &inputFile, User* &head, User* &tail)
-{
-    std::ifstream in_str(inputFile);
-    if(!in_str.good())
-    {
-        std::cerr << "Invalid Input File" << std::endl; 
-        exit(1);
-    }
-    
+void parseFile(std::ifstream &in_str, User* &head, User* &tail)
+{ 
     std::string name, gender, phoneNumber, profession, 
                 school, genderPref, likedUsers, isPremium;
     unsigned int age, agePrefMin, agePrefMax, distancePref;
@@ -96,7 +102,6 @@ void parseFile(std::string &inputFile, User* &head, User* &tail)
 
         pushBack(head, tail, user);
     }
-    in_str.close();
 }
 bool stringToBool(std::string input)
 {
