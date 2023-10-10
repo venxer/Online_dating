@@ -71,6 +71,7 @@ int main(int argc, char const *argv[])
         else
         {
             otherNum = argv[5];
+            unmatch(head, user, otherNum, out_str);
         }
     }
     else
