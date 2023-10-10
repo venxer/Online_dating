@@ -162,7 +162,33 @@ void findMatch(User* head, const User* user, std::ofstream &out_str)
 }
 void findLike(User* head, const User* user, std::ofstream &out_str)
 {
+    if(!user->getIsPremium())
+    {
+        out_str << "Only premium users can view who liked you." << std::endl;
+        return;
+    }
 
+    int count = 0;
+    std::string userNum;
+    if(head != nullptr)
+    {
+        userNum = user->getPhoneNumber();
+    }
+    
+    // Loop through nodes
+    while(head != nullptr)
+    {
+        if(head->getLikedUsers().find(userNum) != std::string::npos)
+        {
+            count++;
+            out_str << *head << std::endl;
+        }
+        head = head->getNext();
+    }
+    if(count == 0)
+    {
+        out_str <<  "You have not received any likes so far." << std::endl;
+    }
 }
 
 std::ostream &operator<<(std::ostream &out_str, const User &user)
