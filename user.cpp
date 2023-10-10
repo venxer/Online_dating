@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 User::User(std::string name,
            unsigned int age,
@@ -57,12 +58,16 @@ void popBack(User* &prev, User* &next)
     // delete the original tail
     delete temp;
 }
-
-std::string removeUnderscore(std::string input)
+User* merge(User* first, User* second)
 {
-    std::replace(input.begin(), input.end(), '_', ' ');
-    return input;
+    if(first == nullptr) return second;
+    if(second == nullptr) return first;
+    if(first->getPhoneNumber() > second->getPhoneNumber())
+    {
+
+    }
 }
+
 bool fetchUser(User* head, const std::string phoneNum, User* &user)
 {
     while(head != nullptr)
@@ -76,6 +81,11 @@ bool fetchUser(User* head, const std::string phoneNum, User* &user)
     }
     user = head;
     return false;
+}
+std::string removeUnderscore(std::string input)
+{
+    std::replace(input.begin(), input.end(), '_', ' ');
+    return input;
 }
 // calculate the distance between two coordinates using Haversine formula
 double calculateDistance(double lat1, double lon1, double lat2, double lon2)
@@ -100,8 +110,27 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2)
 
     return distanceMiles;
 }
+std::string removeSubstring(std::string original, std::string remove)
+{
+    size_t index = original.find(remove);
+    // If the substring is found, remove substring
+    if (index != std::string::npos) 
+    {
+        original.erase(index, remove.length());
+    }
+    return original;
+}
+std::string replaceSubstring(std::string original, std::string remove, std::string replace)
+{
+    size_t index = original.find(remove);
+    if (index != std::string::npos) 
+    {
+        original.replace(index, remove.length(), replace);
+    }
+    return original;
 
-void findProfile(User* head, const User* user, std::ofstream &out_str)
+}
+void findProfile(User* head, User* user, std::ofstream &out_str)
 {
     int count = 0;
     // Loop through nodes
@@ -126,11 +155,11 @@ void findProfile(User* head, const User* user, std::ofstream &out_str)
     // If no profiles matches preferences
     if(count == 0)
     {
-        out_str << "There are no users matching with your preference at this moment." << std::endl;
+        out_str << "There are no users matching with your preference at this moment.\n" << std::endl;
     }
 }
 //NEED TO SORT
-void findMatch(User* head, const User* user, std::ofstream &out_str)
+void findMatch(User* head, User* user, std::ofstream &out_str)
 {
     int count = 0;
     std::string userLikedUser;
@@ -157,14 +186,14 @@ void findMatch(User* head, const User* user, std::ofstream &out_str)
     // If no matches
     if(count == 0)
     {
-        out_str << "You do not have any matches at this moment." << std::endl;
+        out_str << "You do not have any matches at this moment.\n" << std::endl;
     }
 }
-void findLike(User* head, const User* user, std::ofstream &out_str)
+void findLike(User* head, User* user, std::ofstream &out_str)
 {
     if(!user->getIsPremium())
     {
-        out_str << "Only premium users can view who liked you." << std::endl;
+        out_str << "Only premium users can view who liked you.\n" << std::endl;
         return;
     }
 
@@ -187,10 +216,53 @@ void findLike(User* head, const User* user, std::ofstream &out_str)
     }
     if(count == 0)
     {
-        out_str <<  "You have not received any likes so far." << std::endl;
+        out_str <<  "You have not received any likes so far.\n" << std::endl;
     }
 }
+void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &out_str)
+{
+    User* otherUser;
+    bool otherUserFound = fetchUser(head, otherNum, otherUser);
+    if(!otherUserFound)
+    {
+        std::cerr << "Invalid Unmatch Account Number" << std::endl;
+        exit(1);
+    }
 
+    std::string userNum; 
+    std::string userLiked;
+    std::string otherUserLiked;
+    if(head != nullptr)
+    {
+        userNum = user->getPhoneNumber();
+        userLiked = user->getLikedUsers();
+        otherUserLiked = otherUser->getLikedUsers();
+        
+        // Remove number from each other's LikedUsers and remove trailing double underscores
+        userLiked = replaceSubstring(removeSubstring(userLiked, otherNum), "__", "_");
+        otherUserLiked = replaceSubstring(removeSubstring(otherUserLiked, userNum), "__", "_");
+        // If no phone numbers in likedUser, set it to null
+        if(userLiked == "") userLiked = "null";
+        if(otherUserLiked == "") otherUserLiked = "null";
+
+        otherUser->setLikedUsers(otherUserLiked);
+        user->setLikedUsers(userLiked);
+    }
+    std::cout << user->getLikedUsers() << std::endl;
+        std::cout << "==========" << std::endl;
+
+    std::cout << otherUser->getLikedUsers() << std::endl;
+
+
+    // while(head != nullptr)
+    // {
+        
+
+    //     head = head->getNext();
+    // }
+
+
+}
 std::ostream &operator<<(std::ostream &out_str, const User &user)
 {
     out_str << user.getName() << " " << user.getAge() << std::endl;
