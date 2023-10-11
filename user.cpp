@@ -58,14 +58,57 @@ void popBack(User* &prev, User* &next)
     // delete the original tail
     delete temp;
 }
-User* merge(User* first, User* second)
+User* merge(User* first, User* second) 
 {
-    if(first == nullptr) return second;
-    if(second == nullptr) return first;
-    if(first->getPhoneNumber() > second->getPhoneNumber())
+    if (first == nullptr) return second;
+    if (second == nullptr) return first;
+    
+    if (first->getPhoneNumber() < second->getPhoneNumber()) 
     {
-
+        first->setNext(merge(first->getNext(), second));
+        if (first->getNext() != nullptr) 
+        {
+            first->getNext()->setPrev(first);
+        }
+        first->setPrev(nullptr);
+        return first;
+    } 
+    else 
+    {
+        second->setNext(merge(first, second->getNext()));
+        if (second->getNext() != nullptr)
+        {
+            second->getNext()->setPrev(second);
+        }
+        second->setPrev(nullptr);
+        return second;
     }
+}
+User* mergeSort(User* head)
+{
+    if (head == nullptr || head->getNext() == nullptr) return head;
+    
+    User* slow = head;
+    User* fast = head->getNext();
+    
+    while (fast != nullptr) 
+    {
+        fast = fast->getNext();
+        if (fast != nullptr) 
+        {
+            fast = fast->getNext();
+            slow = slow->getNext();
+        }
+    }
+    
+    User* secondHalf = slow->getNext();
+    slow->setNext(nullptr);
+    if (secondHalf != nullptr) 
+    {
+        secondHalf->setPrev(nullptr);
+    }
+    
+    return merge(mergeSort(head), mergeSort(secondHalf));
 }
 
 bool fetchUser(User* head, const std::string phoneNum, User* &user)
@@ -130,6 +173,7 @@ std::string replaceSubstring(std::string original, std::string remove, std::stri
     return original;
 
 }
+
 void findProfile(User* head, User* user, std::ofstream &out_str)
 {
     int count = 0;
@@ -158,7 +202,6 @@ void findProfile(User* head, User* user, std::ofstream &out_str)
         out_str << "There are no users matching with your preference at this moment.\n" << std::endl;
     }
 }
-//NEED TO SORT
 void findMatch(User* head, User* user, std::ofstream &out_str)
 {
     int count = 0;
@@ -221,6 +264,7 @@ void findLike(User* head, User* user, std::ofstream &out_str)
 }
 void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &out_str)
 {
+    if(head == nullptr) return;
     User* otherUser;
     bool otherUserFound = fetchUser(head, otherNum, otherUser);
     if(!otherUserFound)
@@ -229,39 +273,53 @@ void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &
         exit(1);
     }
 
-    std::string userNum; 
-    std::string userLiked;
-    std::string otherUserLiked;
-    if(head != nullptr)
+    std::string userNum = user->getPhoneNumber();
+    std::string userLiked = user->getLikedUsers();
+    std::string otherUserLiked = otherUser->getLikedUsers();
+    
+    // Remove number from each other's LikedUsers and remove trailing double underscores
+    userLiked = replaceSubstring(removeSubstring(userLiked, otherNum), "__", "_");
+    otherUserLiked = replaceSubstring(removeSubstring(otherUserLiked, userNum), "__", "_");
+    // If no phone numbers in likedUser, set it to null
+    if(userLiked == "") userLiked = "null";
+    if(otherUserLiked == "") otherUserLiked = "null";
+
+    otherUser->setLikedUsers(otherUserLiked);
+    user->setLikedUsers(userLiked);
+    
+
+    int userCount = 0;
+    int otherUserCount = 0;
+    
+    // User
+    out_str << user->getName() << "'s match list\n" << std::endl;
+    User* current = head;
+    while(current != nullptr)
     {
-        userNum = user->getPhoneNumber();
-        userLiked = user->getLikedUsers();
-        otherUserLiked = otherUser->getLikedUsers();
-        
-        // Remove number from each other's LikedUsers and remove trailing double underscores
-        userLiked = replaceSubstring(removeSubstring(userLiked, otherNum), "__", "_");
-        otherUserLiked = replaceSubstring(removeSubstring(otherUserLiked, userNum), "__", "_");
-        // If no phone numbers in likedUser, set it to null
-        if(userLiked == "") userLiked = "null";
-        if(otherUserLiked == "") otherUserLiked = "null";
-
-        otherUser->setLikedUsers(otherUserLiked);
-        user->setLikedUsers(userLiked);
+        if(userLiked.find(current->getPhoneNumber()) != std::string::npos &&
+           current->getLikedUsers().find(userNum) != std::string::npos)
+        {
+            // Increase count + Output info
+            userCount++;
+            out_str << *current << std::endl;
+        }
+        current = current->getNext();
     }
-    std::cout << user->getLikedUsers() << std::endl;
-        std::cout << "==========" << std::endl;
-
-    std::cout << otherUser->getLikedUsers() << std::endl;
-
-
-    // while(head != nullptr)
-    // {
-        
-
-    //     head = head->getNext();
-    // }
-
-
+    out_str << "======\n" << std::endl;
+    // Other User
+    out_str << otherUser->getName() << "'s match list\n" << std::endl;
+    current = head;
+    while(current != nullptr)
+    {
+        if(otherUserLiked.find(current->getPhoneNumber()) != std::string::npos &&
+           current->getLikedUsers().find(otherNum) != std::string::npos)
+        {
+            // Increase count + Output info
+            otherUserCount++;
+            out_str << *current << std::endl;
+        }
+        current = current->getNext();
+    }
 }
 std::ostream &operator<<(std::ostream &out_str, const User &user)
 {

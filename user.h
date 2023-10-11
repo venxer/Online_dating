@@ -64,9 +64,11 @@ class User
         
 };
 
+// Altering Nodes
 void pushBack(User* &head, User* &tail, User* &User);
 void popBack(User* &head, User* &tail);
 User* merge(User* first, User* second);
+User* mergeSort(User* head);
 
 bool fetchUser(User* head, const std::string phoneNum, User* &user);
 
