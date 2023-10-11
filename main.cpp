@@ -7,6 +7,7 @@
 void parseFile(std::ifstream &in_str, User* &head, User* &tail);
 bool stringToBool(std::string input);
 void printNode(User* head);
+void clearUsers(User* &head);
 
 int main(int argc, char const *argv[])
 {
@@ -54,6 +55,7 @@ int main(int argc, char const *argv[])
     }
     else if(mode == "match")
     {
+        head = mergeSort(head);
         findMatch(head, user, out_str);
     }
     else if(mode == "like")
@@ -71,6 +73,7 @@ int main(int argc, char const *argv[])
         else
         {
             otherNum = argv[5];
+            head = mergeSort(head);
             unmatch(head, user, otherNum, out_str);
         }
     }
@@ -80,6 +83,8 @@ int main(int argc, char const *argv[])
         exit(1);   
     }
 
+    // Free memory
+    clearUsers(head);
     return 0;
 }
 
@@ -118,5 +123,15 @@ void printNode(User* head)
 
         // Move to the next node
         head = head->getNext();
+    }
+}
+void clearUsers(User* &head)
+{
+    User* next;
+    while (head != nullptr) 
+    {
+        next = head->getNext();
+        delete head;
+        head = next;
     }
 }
