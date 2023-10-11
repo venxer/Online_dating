@@ -38,17 +38,17 @@ User::User(std::string name,
     this->likedUsers = likedUsers;
 }
 
-void pushBack(User* &prev, User* &next, User* &user)
+void pushBack(User* &head, User* &tail, User* &user)
 {
-    if(next == nullptr)
+    if(tail == nullptr)
     {
-        prev = user;
-        next = user;
+        head = user;
+        tail = user;
         return;
     }
-    next->setNext(user);
-    user->setPrev(next);
-    next = user;
+    tail->setNext(user);
+    user->setPrev(tail);
+    tail = user;
 }
 void popBack(User* &prev, User* &next)
 {
@@ -60,12 +60,16 @@ void popBack(User* &prev, User* &next)
 }
 User* merge(User* first, User* second) 
 {
+    // Check if empty
     if (first == nullptr) return second;
     if (second == nullptr) return first;
     
+    // Order by PhoneNumber
     if (first->getPhoneNumber() < second->getPhoneNumber()) 
     {
+        // Recursively merge the elements after the first node
         first->setNext(merge(first->getNext(), second));
+        // Adjust pointers for doubly linked list
         if (first->getNext() != nullptr) 
         {
             first->getNext()->setPrev(first);
@@ -75,7 +79,9 @@ User* merge(User* first, User* second)
     } 
     else 
     {
+        // Recursively merge the elements after the second node
         second->setNext(merge(first, second->getNext()));
+        // Adjust pointers for doubly linked list
         if (second->getNext() != nullptr)
         {
             second->getNext()->setPrev(second);
@@ -86,11 +92,12 @@ User* merge(User* first, User* second)
 }
 User* mergeSort(User* head)
 {
+    // Check if only singular Node (already sorted)
     if (head == nullptr || head->getNext() == nullptr) return head;
     
+    // Split list into 2
     User* slow = head;
     User* fast = head->getNext();
-    
     while (fast != nullptr) 
     {
         fast = fast->getNext();
@@ -100,7 +107,8 @@ User* mergeSort(User* head)
             slow = slow->getNext();
         }
     }
-    
+
+    // Seperate second half from first half
     User* secondHalf = slow->getNext();
     slow->setNext(nullptr);
     if (secondHalf != nullptr) 
@@ -108,27 +116,46 @@ User* mergeSort(User* head)
         secondHalf->setPrev(nullptr);
     }
     
+    // Recursively call mergeSort on each half
     return merge(mergeSort(head), mergeSort(secondHalf));
 }
 
-bool fetchUser(User* head, const std::string phoneNum, User* &user)
+std::string removeUnderscore(std::string input)
+{
+    std::replace(input.begin(), input.end(), '_', ' ');
+    return input;
+}
+std::string removeSubstring(std::string original, std::string remove)
+{
+    size_t index = original.find(remove);
+    // If the substring is found, remove substring
+    if (index != std::string::npos) 
+    {
+        original.erase(index, remove.length());
+    }
+    return original;
+}
+std::string replaceSubstring(std::string original, std::string remove, std::string replace)
+{
+    size_t index = original.find(remove);
+    if (index != std::string::npos) 
+    {
+        original.replace(index, remove.length(), replace);
+    }
+    return original;
+}
+
+User* fetchUser(User* head, const std::string phoneNum)
 {
     while(head != nullptr)
     {
         if(head->getPhoneNumber() == phoneNum)
         {
-            user = head;
-            return true;
+            return head;
         }
         head = head->getNext();
     }
-    user = head;
-    return false;
-}
-std::string removeUnderscore(std::string input)
-{
-    std::replace(input.begin(), input.end(), '_', ' ');
-    return input;
+    return head;
 }
 // calculate the distance between two coordinates using Haversine formula
 double calculateDistance(double lat1, double lon1, double lat2, double lon2)
@@ -152,26 +179,6 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2)
     double distanceMiles = distanceKM * 0.621371;
 
     return distanceMiles;
-}
-std::string removeSubstring(std::string original, std::string remove)
-{
-    size_t index = original.find(remove);
-    // If the substring is found, remove substring
-    if (index != std::string::npos) 
-    {
-        original.erase(index, remove.length());
-    }
-    return original;
-}
-std::string replaceSubstring(std::string original, std::string remove, std::string replace)
-{
-    size_t index = original.find(remove);
-    if (index != std::string::npos) 
-    {
-        original.replace(index, remove.length(), replace);
-    }
-    return original;
-
 }
 
 void findProfile(User* head, User* user, std::ofstream &out_str)
@@ -265,13 +272,7 @@ void findLike(User* head, User* user, std::ofstream &out_str)
 void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &out_str)
 {
     if(head == nullptr) return;
-    User* otherUser;
-    bool otherUserFound = fetchUser(head, otherNum, otherUser);
-    if(!otherUserFound)
-    {
-        std::cerr << "Invalid Unmatch Account Number" << std::endl;
-        exit(1);
-    }
+    User* otherUser = fetchUser(head, otherNum);
 
     std::string userNum = user->getPhoneNumber();
     std::string userLiked = user->getLikedUsers();
@@ -292,7 +293,7 @@ void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &
     int otherUserCount = 0;
     
     // User
-    out_str << user->getName() << "'s match list\n" << std::endl;
+    out_str << user->getName() << "'s match list:\n" << std::endl;
     User* current = head;
     while(current != nullptr)
     {
@@ -305,9 +306,14 @@ void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &
         }
         current = current->getNext();
     }
+    // If no matches
+    if(userCount == 0)
+    {
+        out_str << "You do not have any matches at this moment.\n" << std::endl;
+    }
     out_str << "======\n" << std::endl;
     // Other User
-    out_str << otherUser->getName() << "'s match list\n" << std::endl;
+    out_str << otherUser->getName() << "'s match list:\n" << std::endl;
     current = head;
     while(current != nullptr)
     {
@@ -319,6 +325,11 @@ void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &
             out_str << *current << std::endl;
         }
         current = current->getNext();
+    }
+    // If no matches
+    if(otherUserCount == 0)
+    {
+        out_str << "You do not have any matches at this moment.\n" << std::endl;
     }
 }
 std::ostream &operator<<(std::ostream &out_str, const User &user)

@@ -65,17 +65,19 @@ class User
 };
 
 // Altering Nodes
-void pushBack(User* &head, User* &tail, User* &User);
+void pushBack(User* &head, User* &tail, User* &user);
 void popBack(User* &head, User* &tail);
 User* merge(User* first, User* second);
 User* mergeSort(User* head);
 
-bool fetchUser(User* head, const std::string phoneNum, User* &user);
-
+// String manipulators
 std::string removeUnderscore(std::string input);
-double calculateDistance(double lat1, double lon1, double lat2, double lon2);
 std::string removeSubstring(std::string original, std::string remove);
 std::string replaceSubstring(std::string original, std::string remove, std::string replace);
+
+// Helper functions
+User* fetchUser(User* head, const std::string phoneNum);
+double calculateDistance(double lat1, double lon1, double lat2, double lon2);
 
 // MODES
 void findProfile(User* head, User* user, std::ofstream &out_str);

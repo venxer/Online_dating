@@ -6,8 +6,7 @@
 
 void parseFile(std::ifstream &in_str, User* &head, User* &tail);
 bool stringToBool(std::string input);
-void printNode(User* head);
-void clearUsers(User* &head);
+void clearUsers(User* head);
 
 int main(int argc, char const *argv[])
 {
@@ -35,19 +34,24 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
+    // Parse input file where head and tail are the head and tail
+    // of the doubly linked list respectively
     User* head = nullptr;
     User* tail = nullptr;
     parseFile(in_str, head, tail);
 
-    // printNode(head);
-    User* user;
-    bool userFound = fetchUser(head, phoneNum, user);
+    User* user = fetchUser(head, phoneNum);
 
-    if(!userFound)
+    if(user == nullptr)
     {
-        std::cerr << "Invalid Account Number" << std::endl;
-        exit(1);   
+        std::cerr << "User not found" << std::endl;
+        exit(1);
     }
+    if(head == nullptr)
+    {
+        exit(1);
+    }
+
 
     if(mode == "profile")
     {
@@ -55,6 +59,7 @@ int main(int argc, char const *argv[])
     }
     else if(mode == "match")
     {
+        // Sort Nodes before unmatch since output needs to be sorted
         head = mergeSort(head);
         findMatch(head, user, out_str);
     }
@@ -65,17 +70,16 @@ int main(int argc, char const *argv[])
     else if(mode =="unmatch")
     {
         // Check for otherNum if mode is "unmatch"
-        if(argv[5] == NULL)
+        if(argc < 5)
         {
             std::cerr << "Missing Inputs" << std::endl;
             exit(1);   
         }
-        else
-        {
-            otherNum = argv[5];
-            head = mergeSort(head);
-            unmatch(head, user, otherNum, out_str);
-        }
+        otherNum = argv[5];
+        // Sort Nodes before unmatch since output needs to be sorted
+        head = mergeSort(head);
+        unmatch(head, user, otherNum, out_str);
+        
     }
     else
     {
@@ -85,6 +89,7 @@ int main(int argc, char const *argv[])
 
     // Free memory
     clearUsers(head);
+    
     return 0;
 }
 
@@ -114,18 +119,8 @@ bool stringToBool(std::string input)
     if(input == "true") return true;
     return false;
 }
-void printNode(User* head)
-{
-    // Loops till node is null
-    while (head != nullptr)
-    {
-        std::cout << *head << std::endl;
 
-        // Move to the next node
-        head = head->getNext();
-    }
-}
-void clearUsers(User* &head)
+void clearUsers(User* head)
 {
     User* next;
     while (head != nullptr) 
