@@ -5,6 +5,25 @@
 #include <fstream>
 #include <cmath>
 
+User::User()
+{
+    name = "";
+    age = 0;
+    gender = "";
+    phoneNumber = "";
+    profession = "";
+    school = "";
+    latitude = 0.0;
+    longitude = 0.0;
+    isPremium = false;
+    agePrefMin = 0;
+    agePrefMax = 0;
+    distancePref = 0;
+    genderPref = "";
+    likedUsers = "";
+    next = nullptr;
+    prev = nullptr;
+}
 User::User(std::string name,
            unsigned int age,
            std::string gender,
@@ -18,9 +37,7 @@ User::User(std::string name,
            unsigned int agePrefMax,
            unsigned int distancePref,
            std::string genderPref,
-           std::string likedUsers,
-           User *next,
-           User *prev)
+           std::string likedUsers)
 {
     this->name = name;
     this->age = age;
@@ -36,6 +53,8 @@ User::User(std::string name,
     this->distancePref = distancePref;
     this->genderPref = genderPref;
     this->likedUsers = likedUsers;
+    next = nullptr;
+    prev = nullptr;
 }
 
 void pushBack(User* &head, User* &tail, User* &user)

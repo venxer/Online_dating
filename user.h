@@ -21,25 +21,24 @@ class User
         unsigned int distancePref;
         std::string genderPref;
         std::string likedUsers;
-        User *next;
-        User *prev;
+        User* next;
+        User* prev;
     public:
-        User(std::string name = "",
-             unsigned int age = 0,
-             std::string gender = "",
-             std::string phoneNumber = "",
-             std::string profession = "",
-             std::string school = "",
-             double latitude = 0.0,
-             double longitude = 0.0,
-             bool isPremium = false,
-             unsigned int agePrefMin = 0,
-             unsigned int agePrefMax = 0,
-             unsigned int distancePref = 0,
-             std::string genderPref = "",
-             std::string likedUsers = "",
-             User* next = nullptr,
-             User* prev = nullptr);
+        User();
+        User(std::string name,
+             unsigned int age,
+             std::string gender,
+             std::string phoneNumber,
+             std::string profession,
+             std::string school,
+             double latitude,
+             double longitude,
+             bool isPremium,
+             unsigned int agePrefMin,
+             unsigned int agePrefMax,
+             unsigned int distancePref,
+             std::string genderPref,
+             std::string likedUsers);
 
         std::string getName()            const{return name;}
         unsigned int getAge()            const{return age;}
