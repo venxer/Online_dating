@@ -305,7 +305,7 @@ void findProfile(User* head, User* user, std::ofstream &out_str)
  */
 void findMatch(User* head, User* user, std::ofstream &out_str)
 {
-    if(head != nullptr) return;
+    if(head == nullptr) return;
 
     int count = 0;
     std::string userLikedUser = user->getLikedUsers();
@@ -340,7 +340,7 @@ void findMatch(User* head, User* user, std::ofstream &out_str)
  */
 void findLike(User* head, User* user, std::ofstream &out_str)
 {
-    if(head != nullptr) return;
+    if(head == nullptr) return;
 
     // Check if user is a premium user
     if(!user->getIsPremium())
