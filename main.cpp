@@ -60,6 +60,10 @@ int main(int argc, char const *argv[])
         std::cerr << "User not found" << std::endl;
         exit(1);
     }
+    if(head == nullptr)
+    {
+        exit(1);
+    }
 
     if(mode == "profile")
     {
