@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cmath>
 
+// Default Constructor
 User::User()
 {
     name = "";
@@ -24,6 +25,7 @@ User::User()
     next = nullptr;
     prev = nullptr;
 }
+// Constructor
 User::User(std::string name,
            unsigned int age,
            std::string gender,
@@ -56,7 +58,13 @@ User::User(std::string name,
     next = nullptr;
     prev = nullptr;
 }
-
+/**
+ * Adds a User object to the end of a doubly linked list
+ * 
+ * @param head Reference to the head pointer of the doubly linked list
+ * @param tail Reference to the tail pointer of the doubly linked list
+ * @param user Pointer to the user object to be added to the doubly linked list
+ */
 void pushBack(User* &head, User* &tail, User* &user)
 {
     if(tail == nullptr)
@@ -69,14 +77,15 @@ void pushBack(User* &head, User* &tail, User* &user)
     user->setPrev(tail);
     tail = user;
 }
-void popBack(User* &prev, User* &next)
-{
-    User* temp = next;
-    next = next->getPrev();
-    next->setNext(nullptr);
-    // delete the original tail
-    delete temp;
-}
+
+/**
+ * Merges two sorted doubly linked lists based on the phone numbers of User
+ * 
+ * @param first Pointer to the head of the first sorted doubly linked list
+ * @param second Pointer to the head of the second sorted doubly linked list
+ * 
+ * @return Pointer to the merged sorted doubly linked list 
+ */
 User* merge(User* first, User* second) 
 {
     // Check if empty
@@ -109,6 +118,14 @@ User* merge(User* first, User* second)
         return second;
     }
 }
+
+/**
+ * Sorts a doubly linked list using merge sort
+ * 
+ * @param head Pointer to head of the doubly inked list
+ * 
+ * @return Pointer to the sorted doubly linked list
+ */
 User* mergeSort(User* head)
 {
     // Check if only singular Node (already sorted)
@@ -139,24 +156,48 @@ User* mergeSort(User* head)
     return merge(mergeSort(head), mergeSort(secondHalf));
 }
 
+/**
+ * Deallocates memory for all nodes in a doubly linked list of User objects
+ * 
+ * @param head Pointer to the head of the doubly linked list
+ */
+void clearUsers(User* head)
+{
+    User* next;
+    while (head != nullptr) 
+    {
+        next = head->getNext();
+        delete head;
+        head = next;
+    }
+}
+
+/**
+ * Removes all instance of underscore in a string
+ * 
+ * @param input String from which underscore should be removed from
+ * 
+ * @return String with no underscore
+ */
 std::string removeUnderscore(std::string input)
 {
     std::replace(input.begin(), input.end(), '_', ' ');
     return input;
 }
-std::string removeSubstring(std::string original, std::string remove)
-{
-    size_t index = original.find(remove);
-    // If the substring is found, remove substring
-    if (index != std::string::npos) 
-    {
-        original.erase(index, remove.length());
-    }
-    return original;
-}
+
+/**
+ * Replace the first occurence of the original string to another string
+ * 
+ * @param original Original string where replacement will occur
+ * @param remove Substring to be replaced
+ * @param replace String to take place of the removed string
+ * 
+ * @return String with specified substring replaced
+ */
 std::string replaceSubstring(std::string original, std::string remove, std::string replace)
 {
     size_t index = original.find(remove);
+    // If index exist
     if (index != std::string::npos) 
     {
         original.replace(index, remove.length(), replace);
@@ -164,6 +205,14 @@ std::string replaceSubstring(std::string original, std::string remove, std::stri
     return original;
 }
 
+/**
+ * Finds the user the phone number is linked to
+ * 
+ * @param head Pointer to the head of the doubly linked list
+ * @param phoneNum Phone Number to search for
+ * 
+ * @return Pointer to the found User object and nullptr if User not found
+ */
 User* fetchUser(User* head, const std::string phoneNum)
 {
     while(head != nullptr)
@@ -175,8 +224,18 @@ User* fetchUser(User* head, const std::string phoneNum)
         head = head->getNext();
     }
     return head;
-}
-// calculate the distance between two coordinates using Haversine formula
+} 
+
+/**
+ * Calculate the distance between two coordinates using Haversine formula
+ * 
+ * @param lat1 Latitude of the first coordinate
+ * @param lon1 Longitude of the first coordinate
+ * @param lat2 Latitude of the second coordinate
+ * @param lon2 Longitude of the second coordinate
+ * 
+ * @return Distance between the two coordinates in miles.
+ */
 double calculateDistance(double lat1, double lon1, double lat2, double lon2)
 {
     const double radiusOfEarth = 6371.0; // Earth's radius in kilometers
@@ -200,9 +259,17 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2)
     return distanceMiles;
 }
 
+/**
+ * Finds and outputs user profiles that match the preferences of the user
+ * 
+ * @param head Pointer to the head of the doubly linked list
+ * @param user Pointer to the user whose preferences are to be matched
+ * @param out_str Output stream for writing the matched user profiles
+ */
 void findProfile(User* head, User* user, std::ofstream &out_str)
 {
     int count = 0;
+
     // Loop through nodes
     while(head != nullptr)
     {
@@ -228,16 +295,21 @@ void findProfile(User* head, User* user, std::ofstream &out_str)
         out_str << "There are no users matching with your preference at this moment.\n" << std::endl;
     }
 }
+
+/**
+ * Finds and outputs mutual matches for the user
+ * 
+ * @param head Pointer to the head of the doubly linked list
+ * @param user Pointer to the user for whose matches are to be found
+ * @param out_str Output stream for writing the matched user profiles
+ */
 void findMatch(User* head, User* user, std::ofstream &out_str)
 {
+    if(head != nullptr) return;
+
     int count = 0;
-    std::string userLikedUser;
-    std::string userNum; 
-    if(head != nullptr)
-    {
-        userLikedUser = user->getLikedUsers();
-        userNum = user->getPhoneNumber();
-    }
+    std::string userLikedUser = user->getLikedUsers();
+    std::string userNum = user->getPhoneNumber();
 
     // Loop through nodes
     while(head != nullptr)
@@ -258,8 +330,19 @@ void findMatch(User* head, User* user, std::ofstream &out_str)
         out_str << "You do not have any matches at this moment.\n" << std::endl;
     }
 }
+
+/**
+ * For premium users, finds and outputs other users that have liked the user
+ * 
+ * @param head Pointer to the head of the doubly linked list
+ * @param user Pointer to the user whom we will find other users that have liked the user
+ * @param out_str Output stream for writing the other users profiles
+ */
 void findLike(User* head, User* user, std::ofstream &out_str)
 {
+    if(head != nullptr) return;
+
+    // Check if user is a premium user
     if(!user->getIsPremium())
     {
         out_str << "Only premium users can view who liked you.\n" << std::endl;
@@ -267,11 +350,7 @@ void findLike(User* head, User* user, std::ofstream &out_str)
     }
 
     int count = 0;
-    std::string userNum;
-    if(head != nullptr)
-    {
-        userNum = user->getPhoneNumber();
-    }
+    std::string userNum = user->getPhoneNumber();
     
     // Loop through nodes
     while(head != nullptr)
@@ -283,36 +362,48 @@ void findLike(User* head, User* user, std::ofstream &out_str)
         }
         head = head->getNext();
     }
+    // If recieved no likes
     if(count == 0)
     {
         out_str <<  "You have not received any likes so far.\n" << std::endl;
     }
 }
+
+/**
+ * Unmatch two users and remove them from each other's likedUser list
+ * Prints each user's updated mutual matches
+ * 
+ * @param head Pointer to the head of the doubly linked list
+ * @param user Pointer to the user unmatching
+ * @param otherNum Phone number of the user to unmatch
+ * @param out_str Output stream for writing the updated matches for each user
+ */
 void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &out_str)
 {
     if(head == nullptr) return;
-    User* otherUser = fetchUser(head, otherNum);
 
+    User* otherUser = fetchUser(head, otherNum);
     std::string userNum = user->getPhoneNumber();
     std::string userLiked = user->getLikedUsers();
     std::string otherUserLiked = otherUser->getLikedUsers();
     
-    // Remove number from each other's LikedUsers and remove trailing double underscores
-    userLiked = replaceSubstring(removeSubstring(userLiked, otherNum), "__", "_");
-    otherUserLiked = replaceSubstring(removeSubstring(otherUserLiked, userNum), "__", "_");
+    // Remove number from each other's LikedUsers
+    userLiked = replaceSubstring(userLiked, otherNum, "");
+    otherUserLiked = replaceSubstring(otherUserLiked, userNum, "");
+    // Remove trailing underscores
+    userLiked = replaceSubstring(userLiked, "__", "_");
+    otherUserLiked = replaceSubstring(otherUserLiked, "__", "_");
     // If no phone numbers in likedUser, set it to null
     if(userLiked == "") userLiked = "null";
     if(otherUserLiked == "") otherUserLiked = "null";
-
+    // Update likedUser list
     otherUser->setLikedUsers(otherUserLiked);
     user->setLikedUsers(userLiked);
     
-
-    int userCount = 0;
-    int otherUserCount = 0;
-    
-    // User
+    /* Print User Output */
+    int userCount = 0;    
     out_str << user->getName() << "'s match list:\n" << std::endl;
+    // Set start to first node and loop through nodes
     User* current = head;
     while(current != nullptr)
     {
@@ -325,14 +416,17 @@ void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &
         }
         current = current->getNext();
     }
-    // If no matches
+    // If no matches for User
     if(userCount == 0)
     {
         out_str << "You do not have any matches at this moment.\n" << std::endl;
     }
     out_str << "======\n" << std::endl;
-    // Other User
+    
+    /* Print Other User Output */
+    int otherUserCount = 0;
     out_str << otherUser->getName() << "'s match list:\n" << std::endl;
+    // Set start to first node and loop through nodes
     current = head;
     while(current != nullptr)
     {
@@ -345,20 +439,26 @@ void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &
         }
         current = current->getNext();
     }
-    // If no matches
+    // If no matches for Other User
     if(otherUserCount == 0)
     {
         out_str << "You do not have any matches at this moment.\n" << std::endl;
     }
 }
+
 std::ostream &operator<<(std::ostream &out_str, const User &user)
 {
+    // Output user's name and age
     out_str << user.getName() << " " << user.getAge() << std::endl;
+    
+    // Output profession if it is not "Undisclosed"
     if(user.getProfession() != "Undisclosed")
     {
         std::string formattedProfession = removeUnderscore(user.getProfession());
         out_str << formattedProfession << std::endl;
     }
+
+    // Output school if it is not "Undisclosed"
     if(user.getSchool() != "Undisclosed")
     {
         std::string formattedSchool = removeUnderscore(user.getSchool());

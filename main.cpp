@@ -4,13 +4,27 @@
 #include <iostream>
 #include <fstream>
 
+/**
+ * Parses data from the input file and creates User objects which will 
+ * be put in a doubly linked list
+ * 
+ * @param in_str Input stream
+ * @param head Reference to the head pointer of the doubly linked list
+ * @param tail Reference to the tail pointer of the doubly linked list
+ */
 void parseFile(std::ifstream &in_str, User* &head, User* &tail);
+/**
+ * Converts a string "true" to true and false otherwise
+ * 
+ * @param input String to be converted to a boolean value
+ * 
+ * @return true if the input is "true", false otherwise
+ */
 bool stringToBool(std::string input);
-void clearUsers(User* head);
 
 int main(int argc, char const *argv[])
 {
-    if(argc < 4)
+    if(argc < 4 || argc > 6)
     {
         std::cerr << "Invalid Inputs" << std::endl;
         exit(1);
@@ -41,17 +55,11 @@ int main(int argc, char const *argv[])
     parseFile(in_str, head, tail);
 
     User* user = fetchUser(head, phoneNum);
-
     if(user == nullptr)
     {
         std::cerr << "User not found" << std::endl;
         exit(1);
     }
-    if(head == nullptr)
-    {
-        exit(1);
-    }
-
 
     if(mode == "profile")
     {
@@ -76,10 +84,10 @@ int main(int argc, char const *argv[])
             exit(1);   
         }
         otherNum = argv[5];
+
         // Sort Nodes before unmatch since output needs to be sorted
         head = mergeSort(head);
         unmatch(head, user, otherNum, out_str);
-        
     }
     else
     {
@@ -118,15 +126,4 @@ bool stringToBool(std::string input)
 {
     if(input == "true") return true;
     return false;
-}
-
-void clearUsers(User* head)
-{
-    User* next;
-    while (head != nullptr) 
-    {
-        next = head->getNext();
-        delete head;
-        head = next;
-    }
 }

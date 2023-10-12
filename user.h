@@ -40,6 +40,7 @@ class User
              std::string genderPref,
              std::string likedUsers);
 
+        // Getters
         std::string getName()            const{return name;}
         unsigned int getAge()            const{return age;}
         std::string getGender()          const{return gender;}
@@ -57,6 +58,7 @@ class User
         User* getNext()                  const{return next;}
         User* getPrev()                  const{return prev;}
 
+        // Setters
         void setNext(User* ptr)               {next = ptr;}
         void setPrev(User* ptr)               {prev = ptr;}
         void setLikedUsers(std::string users) {likedUsers = users;}
@@ -65,25 +67,25 @@ class User
 
 // Altering Nodes
 void pushBack(User* &head, User* &tail, User* &user);
-void popBack(User* &head, User* &tail);
 User* merge(User* first, User* second);
 User* mergeSort(User* head);
+void clearUsers(User* head);
 
 // String manipulators
 std::string removeUnderscore(std::string input);
-std::string removeSubstring(std::string original, std::string remove);
 std::string replaceSubstring(std::string original, std::string remove, std::string replace);
 
 // Helper functions
 User* fetchUser(User* head, const std::string phoneNum);
 double calculateDistance(double lat1, double lon1, double lat2, double lon2);
 
-// MODES
+// Mode
 void findProfile(User* head, User* user, std::ofstream &out_str);
 void findMatch(User* head, User* user, std::ofstream &out_str);
 void findLike(User* head, User* user, std::ofstream &out_str);
 void unmatch(User* head, User* user, const std::string otherNum, std::ofstream &out_str);
 
+// Output
 std::ostream &operator<<(std::ostream &out_str, const User &user);
 
 #endif
